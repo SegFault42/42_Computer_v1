@@ -4,20 +4,84 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
-func reduceForm(equation []string) string {
-	// get a b and c
-	reg := regexp.MustCompile(`[+-]`)
-	trinome := reg.Split(equtrinometion[0], -1)
-	for i := rtrinomenge trinome {
-		reg := regexp.MustCompile(`[ ]`)
-		trinome[i] = reg.RepltrinomeceAllString(trinome[i], "")
-		fmt.Println(trinome[i])
+func removeSpace(str string) string {
+	reg := regexp.MustCompile(`[ ]`)
+	newStr := reg.ReplaceAllString(str, "")
+
+	return (newStr)
+}
+
+func addSpaceBeforeSign(str string) string {
+	// add space before +
+	reg := regexp.MustCompile(`[+]`)
+	str = reg.ReplaceAllLiteralString(str, " +")
+
+	// add space before -
+	reg = regexp.MustCompile(`[-]`)
+	str = reg.ReplaceAllLiteralString(str, " -")
+
+	return (str)
+}
+
+func getDegree(listLeft []string, listRight []string) int {
+	var degree int
+
+	for _, elem := range listLeft {
+		tmp, _ := strconv.Atoi(string(elem[len(elem)-1]))
+		if tmp > degree {
+			degree = tmp
+		}
 	}
 
-	return ""
+	// TODO : fix crash here
+	for _, elem := range listRight {
+		tmp, _ := strconv.Atoi(string(elem[len(elem)-1]))
+		if tmp > degree {
+			degree = tmp
+		}
+		// addition chaque terme
+		add := strings.Split(elem, "*")
+		fmt.Println(add)
+		number, _ := strconv.Atoi(add[0])
+		fmt.Println(number)
+	}
+
+	return (degree)
+}
+
+func reduceForm(equation []string) string {
+	// remove blank
+	left := removeSpace(equation[0])
+	right := removeSpace(equation[1])
+
+	// add space to keep sign
+	left = addSpaceBeforeSign(left)
+	right = addSpaceBeforeSign(right)
+
+	// remove space
+	listLeft := strings.Split(left, " ")
+	listRight := strings.Split(right, " ")
+
+	if len(listLeft) > 3 || len(listRight) > 3 {
+		fmt.Fprintf(os.Stderr, "Equation bad formatted\n")
+		return ""
+	}
+
+	degree := getDegree(listLeft, listRight)
+	if degree > 2 {
+		fmt.Println("Polynomial degree: 3\nThe polynomial degree is stricly greater than 2, I can't solve")
+		return ""
+	}
+
+	//for elem := range listRight {
+
+	//}
+
+	return "a"
 }
 
 func main() {
@@ -34,5 +98,8 @@ func main() {
 		return
 	}
 
-	reduceForm(split)
+	reduced := reduceForm(split)
+	if reduced == "" {
+		return
+	}
 }
