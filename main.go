@@ -44,27 +44,30 @@ func getDegree(listLeft []string, listRight []string) int {
 			degree = tmp
 		}
 		// addition chaque terme
-		add := strings.Split(elem, "*")
-		fmt.Println(add)
-		number, _ := strconv.Atoi(add[0])
-		fmt.Println(number)
+		//add := strings.Split(elem, "*")
+		//fmt.Println(add)
+		//number, _ := strconv.Atoi(add[0])
+		//fmt.Println(number)
 	}
 
 	return (degree)
 }
 
 func reduceForm(equation []string) string {
-	// remove blank
-	left := removeSpace(equation[0])
-	right := removeSpace(equation[1])
-
 	// add space to keep sign
-	left = addSpaceBeforeSign(left)
-	right = addSpaceBeforeSign(right)
+	left := addSpaceBeforeSign(equation[0])
+	right := addSpaceBeforeSign(equation[1])
+
+	// remove blank
+	left = removeSpace(left)
+	right = removeSpace(right)
 
 	// remove space
 	listLeft := strings.Split(left, " ")
 	listRight := strings.Split(right, " ")
+
+	fmt.Println(listLeft)
+	fmt.Println(listRight)
 
 	if len(listLeft) > 3 || len(listRight) > 3 {
 		fmt.Fprintf(os.Stderr, "Equation bad formatted\n")
