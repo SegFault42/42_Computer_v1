@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/kr/pretty"
 )
 
 func removeSpace(str string) string {
@@ -53,38 +56,67 @@ func getDegree(listLeft []string, listRight []string) int {
 	return (degree)
 }
 
-func reduceForm(equation []string) string {
-	// add space to keep sign
-	left := addSpaceBeforeSign(equation[0])
-	right := addSpaceBeforeSign(equation[1])
+func remove(s []string, i int) []string {
+	return append(s[:i], s[i+1:]...)
+}
 
+func cleanEquation(equation []string) ([]string, []string) {
 	// remove blank
-	left = removeSpace(left)
-	right = removeSpace(right)
+	left := removeSpace(equation[0])
+	right := removeSpace(equation[1])
 
-	// remove space
+	// add space to keep sign
+	left = addSpaceBeforeSign(left)
+	right = addSpaceBeforeSign(right)
+
+	// split string on space
 	listLeft := strings.Split(left, " ")
 	listRight := strings.Split(right, " ")
 
-	fmt.Println(listLeft)
-	fmt.Println(listRight)
-
-	if len(listLeft) > 3 || len(listRight) > 3 {
-		fmt.Fprintf(os.Stderr, "Equation bad formatted\n")
-		return ""
+	// Remove blank slice
+	if listLeft[0] == "" {
+		listLeft = remove(listLeft, 0)
+	}
+	if listRight[0] == "" {
+		listRight = remove(listRight, 0)
 	}
 
-	degree := getDegree(listLeft, listRight)
-	if degree > 2 {
-		fmt.Println("Polynomial degree: 3\nThe polynomial degree is stricly greater than 2, I can't solve")
-		return ""
+	return listLeft, listRight
+}
+
+func formatEquation(left []string, right []string) string {
+	regOnlyDigit := regexp.MustCompile(`[-+]?[0-9]*\.?[0-9]`)
+
+	for i, elem := range left {
+		if regOnlyDigit.Match([]byte(elem)) == true {
+			left[i] = elem + "*X^0"
+		}
 	}
 
-	//for elem := range listRight {
+	//pretty.Println(left)
+	return ""
+}
 
+func ReduceForm(equation []string) []string {
+	left, right := cleanEquation(equation)
+
+	pretty.Println(left)
+	formatEquation(left, right)
+
+	//if len(left) > 3 || len(right) > 3 {
+	//log.Printf("Equation bad formatted\n")
+	//return ""
 	//}
 
-	return "a"
+	degree := getDegree(left, right)
+	if degree > 2 {
+		fmt.Println("Polynomial degree: 3\nThe polynomial degree is stricly greater than 2, I can't solve")
+		return nil
+	}
+
+	//pretty.Println(right)
+
+	return left
 }
 
 func main() {
@@ -97,12 +129,15 @@ func main() {
 	split := strings.Split(equation, "= ")
 
 	if len(split) != 2 {
-		fmt.Fprintf(os.Stderr, "Equation bad formatted\n")
+		log.Printf("Equation bad formatted\n")
 		return
 	}
 
-	reduced := reduceForm(split)
-	if reduced == "" {
+	reduced := ReduceForm(split)
+	if reduced == nil {
 		return
 	}
 }
+
+// match good formated term
+// [-+]?[0-9]*\.?[0-9]*\*X[\^][0-2]
