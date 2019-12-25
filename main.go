@@ -84,6 +84,7 @@ func formatEquation(array []string) []string {
 	regOnlyX := regexp.MustCompile(`^[-+]?[X]$`)
 	regNoPow := regexp.MustCompile(`^[-+]?[0-9]*\.?[0-9]\*X*$`)
 	regNoCoef := regexp.MustCompile(`^[+-]?X\^[0-9]$`)
+	regMissingSign := regexp.MustCompile(`^[0-9]*\.?[0-9]*\*X[\^][0-2]$`)
 
 	for i, elem := range array {
 		if regOnlyDigit.MatchString(elem) == true {
@@ -107,20 +108,24 @@ func formatEquation(array []string) []string {
 				elem = elem[1:len(elem)]
 				array[i] = "+1*X" + elem
 			}
+		} else if regMissingSign.MatchString(elem) == true {
+			array[i] = "+" + elem
 		}
 	}
 
 	return (array)
 }
 
-func moveLeftToRight(left []string, right []string) []string {
+func moveRightToLeft(left []string, right []string) []string {
 	for i, elem := range right {
 		if strings.Contains(right[i], "+") == true {
 			right[i] = strings.Replace(elem, "+", "-", 1)
+		} else {
+			right[i] = strings.Replace(elem, "-", "+", 1)
 		}
 	}
 
-	pretty.Println("right = ", right)
+	left = append(left, right...)
 
 	return (left)
 }
@@ -131,9 +136,8 @@ func ReduceForm(equation []string) []string {
 	left = formatEquation(left)
 	right = formatEquation(right)
 
-	pretty.Println(left)
 	// move all right side to left side
-	left = moveLeftToRight(left, right)
+	left = moveRightToLeft(left, right)
 
 	//sumTerme(left)
 
