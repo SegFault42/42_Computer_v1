@@ -130,6 +130,49 @@ func moveRightToLeft(left []string, right []string) []string {
 	return (left)
 }
 
+func checkFormatEquation(array []string) bool {
+	reg := regexp.MustCompile(`[-+]?[0-9]*\.?[0-9]*\*X[\^][0-9]`)
+
+	for _, elem := range array {
+		if reg.MatchString(elem) == false {
+			log.Printf("%s bad formatted\n", elem)
+			return (false)
+		}
+	}
+
+	return (true)
+}
+
+func sumTerm(array []string) []string {
+	pretty.Println(array)
+	reg := regexp.MustCompile(`[-+]?[0-9]*\.?[0-9]*`)
+
+	var powZero []string
+	var powOne []string
+	var powTwo []string
+
+	for _, elem := range array {
+		num := reg.FindAllString(elem, -1)
+		pretty.Println(num)
+		if num[3] == "0" {
+			powZero = append(powZero, num[0])
+		} else if num[3] == "1" {
+			powOne = append(powOne, num[0])
+		} else if num[3] == "2" {
+			powTwo = append(powTwo, num[0])
+		} else {
+			log.Printf("Polynomial degree: %s. The polynomial degree is stricly greater than 2, I can't solve\n", num[3])
+			return (nil)
+		}
+	}
+
+	pretty.Println(powZero)
+	pretty.Println(powOne)
+	pretty.Println(powTwo)
+
+	return (array)
+}
+
 func ReduceForm(equation []string) []string {
 	left, right := cleanEquation(equation)
 
@@ -139,25 +182,17 @@ func ReduceForm(equation []string) []string {
 	// move all right side to left side
 	left = moveRightToLeft(left, right)
 
-	//sumTerme(left)
+	if checkFormatEquation(left) == false {
+		return (nil)
+	}
 
-	pretty.Println(left)
-	pretty.Println(right)
-
-	//if len(left) > 3 || len(right) > 3 {
-	//log.Printf("Equation bad formatted\n")
-	//return ""
-	//}
-
-	degree := getDegree(left, right)
-	if degree > 2 {
-		fmt.Println("Polynomial degree: 3\nThe polynomial degree is stricly greater than 2, I can't solve")
-		return nil
+	if sumTerm(left) == nil {
+		return (nil)
 	}
 
 	//pretty.Println(right)
 
-	return left
+	return (left)
 }
 
 func main() {
