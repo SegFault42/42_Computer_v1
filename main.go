@@ -21,11 +21,11 @@ func main() {
 		return
 	}
 
-	reduced := ReduceForm(split)
-	if reduced == nil {
+	A, B, C, err := ReduceForm(split)
+	if err != nil {
 		return
 	}
-}
 
-// match good formated term
-// [-+]?[0-9]*\.?[0-9]*\*X[\^][0-2]
+	_ = A + B + C
+
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"regexp"
@@ -153,26 +154,9 @@ func checkFormatEquation(array []string) bool {
 	return (true)
 }
 
-func ReduceForm(equation []string) []string {
-	left, right := cleanEquation(equation)
-
-	left = formatEquation(left)
-	right = formatEquation(right)
-
-	// move all right side to left side
-	left = moveRightToLeft(left, right)
-
-	if checkFormatEquation(left) == false {
-		return (nil)
-	}
-
-	A, B, C := sumTerm(left)
-	if A == 0 || B == 0 || C == 0 {
-		log.Println("sumTerm error")
-		return (nil)
-	}
-
+func printReducedForm(A float64, B float64, C float64) {
 	fmt.Printf("Reduced form: %v * X^2 ", A)
+
 	if B > 0 {
 		fmt.Printf("+ %v * X^1", B)
 	} else {
@@ -184,6 +168,28 @@ func ReduceForm(equation []string) []string {
 	} else {
 		fmt.Printf("- %v * X^0 = 0\n", C*-1)
 	}
+}
 
-	return (left)
+func ReduceForm(equation []string) (float64, float64, float64, error) {
+	left, right := cleanEquation(equation)
+	err := errors.New("")
+
+	left = formatEquation(left)
+	right = formatEquation(right)
+
+	// move all right side to left side
+	left = moveRightToLeft(left, right)
+
+	if checkFormatEquation(left) == false {
+		return 0, 0, 0, err
+	}
+
+	A, B, C, err := sumTerm(left)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	printReducedForm(A, B, C)
+
+	return A, B, C, nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"regexp"
 	"strconv"
@@ -28,7 +29,7 @@ func getCoefAndPow(array []string) ([]string, []string, []string) {
 		} else if num[len(num)-1] == "2" {
 			powTwo = append(powTwo, num[0])
 		} else {
-			log.Printf("Polynomial degree: %s. The polynomial degree is stricly greater than 2, I can't solve\n", num[3])
+			log.Printf("Polynomial degree: %s. The polynomial degree is stricly greater than 2, I can't solve\n", num[len(num)-1])
 			return nil, nil, nil
 		}
 	}
@@ -36,13 +37,13 @@ func getCoefAndPow(array []string) ([]string, []string, []string) {
 	return powZero, powOne, powTwo
 }
 
-func sumTerm(array []string) (float64, float64, float64) {
+func sumTerm(array []string) (float64, float64, float64, error) {
 	var A, B, C float64
 
 	powZero, powOne, powTwo := getCoefAndPow(array)
 	if powZero == nil {
-		log.Printf("getCoefAndPow Error\n")
-		return 0, 0, 0
+		err := errors.New("sumTerm() error")
+		return 0, 0, 0, err
 	}
 
 	for _, elem := range powZero {
@@ -58,5 +59,5 @@ func sumTerm(array []string) (float64, float64, float64) {
 		A += i
 	}
 
-	return A, B, C
+	return A, B, C, nil
 }
