@@ -151,6 +151,7 @@ func sumTerm(array []string) []string {
 	var powOne []string
 	var powTwo []string
 
+	// get coef and pow
 	for _, elem := range array {
 		num := reg.FindAllString(elem, -1)
 		pretty.Println(num)
@@ -166,9 +167,29 @@ func sumTerm(array []string) []string {
 		}
 	}
 
-	pretty.Println(powZero)
-	pretty.Println(powOne)
-	pretty.Println(powTwo)
+	//pretty.Println(powZero)
+	//pretty.Println(powOne)
+	//pretty.Println(powTwo)
+
+	// add A, B and C
+	var A, B, C float64
+
+	for _, elem := range powZero {
+		i, _ := strconv.ParseFloat(elem, 64)
+		A += i
+	}
+	for _, elem := range powOne {
+		i, _ := strconv.ParseFloat(elem, 64)
+		B += i
+	}
+	for _, elem := range powTwo {
+		i, _ := strconv.ParseFloat(elem, 64)
+		C += i
+	}
+
+	fmt.Println(A)
+	fmt.Println(B)
+	fmt.Println(C)
 
 	return (array)
 }
