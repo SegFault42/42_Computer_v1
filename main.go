@@ -30,5 +30,7 @@ func main() {
 	fmt.Println("Formula to get delta is : b² - 4ac")
 
 	delta := getDelta(A, B, C)
+
 	_ = delta
+	calculateResult(A, B, delta)
 }

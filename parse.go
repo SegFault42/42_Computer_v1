@@ -200,6 +200,7 @@ func ReduceForm(equation []string) (float32, float32, float32, error) {
 
 	A, B, C, err := sumTerm(left)
 	if err != nil {
+		fmt.Println(err)
 		return 0, 0, 0, err
 	}
 
