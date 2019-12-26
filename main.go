@@ -26,6 +26,9 @@ func main() {
 		return
 	}
 
-	_ = A + B + C
+	fmt.Printf("A = %v, B = %v, C = %v\n", A, B, C)
+	fmt.Println("Formula to get delta is : b² - 4ac")
 
+	delta := getDelta(A, B, C)
+	_ = delta
 }

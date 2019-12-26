@@ -154,7 +154,7 @@ func checkFormatEquation(array []string) bool {
 	return (true)
 }
 
-func printReducedForm(A float64, B float64, C float64) {
+func printReducedForm(A float32, B float32, C float32) {
 	fmt.Printf("Reduced form: %v * X^2 ", A)
 
 	if B > 0 {
@@ -168,9 +168,23 @@ func printReducedForm(A float64, B float64, C float64) {
 	} else {
 		fmt.Printf("- %v * X^0 = 0\n", C*-1)
 	}
+
+	fmt.Printf("Reduced form: %vx² ", A)
+
+	if B > 0 {
+		fmt.Printf("+ %vx ", B)
+	} else {
+		fmt.Printf("- %vx", B*-1)
+	}
+
+	if C > 0 {
+		fmt.Printf("+ %v = 0\n\n", C)
+	} else {
+		fmt.Printf("- %v = 0\n\n", C*-1)
+	}
 }
 
-func ReduceForm(equation []string) (float64, float64, float64, error) {
+func ReduceForm(equation []string) (float32, float32, float32, error) {
 	left, right := cleanEquation(equation)
 	err := errors.New("")
 
