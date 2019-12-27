@@ -28,17 +28,10 @@ func addSpaceBeforeSign(str string) string {
 	return (str)
 }
 
-func getDegree(listLeft []string, listRight []string) int {
+func getDegree(listLeft []string) int {
 	var degree int
 
 	for _, elem := range listLeft {
-		tmp, _ := strconv.Atoi(string(elem[len(elem)-1]))
-		if tmp > degree {
-			degree = tmp
-		}
-	}
-
-	for _, elem := range listRight {
 		tmp, _ := strconv.Atoi(string(elem[len(elem)-1]))
 		if tmp > degree {
 			degree = tmp
@@ -205,6 +198,14 @@ func ReduceForm(equation []string) (float32, float32, float32, error) {
 	}
 
 	printReducedForm(A, B, C)
+
+	degree := getDegree(left)
+	fmt.Printf("Polynomial degree: %v\n", degree)
+	if degree == 0 {
+		fmt.Println("All real numbers are solution")
+		err = errors.New("")
+		return 0, 0, 0, err
+	}
 
 	return A, B, C, nil
 }

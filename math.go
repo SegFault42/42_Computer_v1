@@ -8,12 +8,28 @@ import (
 	"strconv"
 )
 
-func getCoefAndPow(array []string) ([]string, []string, []string) {
+func isEquPossible(array []string) bool {
+	var result float32
+
+	for _, elem := range array {
+		i, _ := strconv.ParseFloat(elem, 64)
+		result += float32(i)
+	}
+
+	if result != 0 {
+		return (false)
+	}
+
+	return (true)
+}
+
+func getCoefAndPow(array []string) ([]string, []string, []string, error) {
 	var powZero []string
 	var powOne []string
 	var powTwo []string
 
 	reg := regexp.MustCompile(`[-+]?[0-9]*\.?[0-9]*`)
+	err := errors.New("There are no solution")
 
 	// get coef and pow
 	for _, elem := range array {
@@ -21,7 +37,7 @@ func getCoefAndPow(array []string) ([]string, []string, []string) {
 		num = removeBlankFromSlice(num)
 		if len(num) != 2 {
 			log.Printf("%v : Parsing error\n", num)
-			return nil, nil, nil
+			return nil, nil, nil, err
 		}
 		if num[len(num)-1] == "0" {
 			powZero = append(powZero, num[0])
@@ -31,7 +47,15 @@ func getCoefAndPow(array []string) ([]string, []string, []string) {
 			powTwo = append(powTwo, num[0])
 		} else {
 			log.Printf("Polynomial degree: %s. The polynomial degree is stricly greater than 2, I can't solve\n", num[len(num)-1])
-			return nil, nil, nil
+			return nil, nil, nil, err
+		}
+	}
+
+	// check if equ degree 0 solvable
+	if len(powOne) == 0 && len(powTwo) == 0 {
+		if isEquPossible(powZero) == false {
+			err := errors.New("There are no solution")
+			return nil, nil, nil, err
 		}
 	}
 
@@ -46,15 +70,14 @@ func getCoefAndPow(array []string) ([]string, []string, []string) {
 		powZero = append(powZero, "1")
 	}
 
-	return powZero, powOne, powTwo
+	return powZero, powOne, powTwo, nil
 }
 
 func sumTerm(array []string) (float32, float32, float32, error) {
 	var A, B, C float32
 
-	powZero, powOne, powTwo := getCoefAndPow(array)
-	if powZero == nil {
-		err := errors.New("sumTerm() error")
+	powZero, powOne, powTwo, err := getCoefAndPow(array)
+	if err != nil {
 		return 0, 0, 0, err
 	}
 
