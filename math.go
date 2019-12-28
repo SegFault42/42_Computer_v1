@@ -142,9 +142,21 @@ func resultZeroDelta(A, B float32) {
 	fmt.Println((-1 * B) / (2 * A))
 }
 
+func resultNegativeDelta(A, B, delta float32) {
+	fmt.Println("Delta is lower than 0.\nTwo results are possible.")
+	fmt.Println("Formula to get result is : -b + i√Δ / 2a")
+
+	fmt.Println("Result is :")
+	//fmt.Printf("%v + i√%v / %v\n", -1*B, delta, 2*A)
+	fmt.Printf("%v + %v * i\n", -B/(2*A), sqrt(-delta)/(2*A))
+	fmt.Printf("Or:\n%v - %v * i\n", -B/(2*A), sqrt(-delta)/(2*A))
+
+}
+
 func calculateResult(A, B, delta float32) {
 	if delta < 0 {
 		fmt.Println("Delta is inferior than 0, no solutions for this equation")
+		resultNegativeDelta(A, B, delta)
 	} else if delta > 0 {
 		resultPositiveDelta(A, B, delta)
 	} else {
