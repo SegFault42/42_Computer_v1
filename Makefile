@@ -1,6 +1,6 @@
 NAME = computer_v1
 
-SRC = main.go
+SRC = main.go math.go parse.go
 
 all: $(NAME)
 
